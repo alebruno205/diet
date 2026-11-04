@@ -1,407 +1,138 @@
 <!doctype html>
 <html lang="it">
 <head>
-<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="theme-color" content="#17251f"><meta name="description" content="Planner alimentare personalizzabile: scegli gli alimenti e ottieni le grammature">
-<title>Il mio planner alimentare</title>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#17251f">
+<title>Planner ricomposizione · guida porzioni</title>
 <style>
-:root{--bg:#f4f6f2;--card:#fff;--ink:#18251e;--muted:#69766e;--line:#dfe6df;--green:#1f6848;--soft:#e7f1e9;--blue:#eaf1f8}
-*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:16px system-ui,-apple-system,Segoe UI,sans-serif}
-header{background:#17251f;color:white;padding:22px 16px 18px}header .wrap,main{max-width:920px;margin:auto}
-h1{font-size:24px;margin:0 0 5px}header p{margin:0;color:#d1ddd4;font-size:14px}
-main{padding:15px;display:grid;gap:14px}.card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:15px;box-shadow:0 2px 8px #14271b08}
-h2{font-size:18px;margin:0 0 12px}h3{font-size:15px;margin:0 0 8px}
-.row{display:flex;gap:9px;align-items:center;flex-wrap:wrap}.between{justify-content:space-between}
-button,select,input{font:inherit}button{border:0;border-radius:10px;padding:10px 13px;background:var(--soft);color:var(--ink);font-weight:650;cursor:pointer}
-button.primary{background:var(--green);color:#fff}button.outline{background:white;border:1px solid var(--line)}button.danger{background:#fae9e7;color:#8c2921}
-button:disabled{opacity:.35;cursor:not-allowed}
-input,select{width:100%;border:1px solid var(--line);border-radius:9px;padding:10px;background:white;color:var(--ink);min-width:0}
-label{font-size:12px;font-weight:650;color:var(--muted);display:block;margin:0 0 5px}
-.field{flex:1;min-width:130px}.small{font-size:13px;color:var(--muted)}.pill{border-radius:30px;background:var(--soft);padding:5px 9px;font-size:12px;font-weight:650}
-.week{display:grid;grid-template-columns:repeat(7,1fr);gap:5px;margin-top:12px}.day{padding:9px 2px;font-size:12px;border:1px solid var(--line);background:white}.day.active{background:var(--green);color:white;border-color:var(--green)}
-.progress{height:8px;background:#e8ece8;border-radius:20px;overflow:hidden}.progress>div{height:100%;background:#3b9465;width:0}
-.meal{border:1px solid var(--line);border-radius:13px;padding:13px;margin-top:10px}.meal.done{background:#f0f6f1;border-color:#c8ddcd}
-.group{background:#f8faf8;border:1px solid var(--line);border-radius:11px;padding:11px;margin-top:10px}
-.component{border-top:1px solid var(--line);padding:10px 0}.component:first-of-type{border-top:0}.food-info{display:block;margin-top:8px;padding:9px 10px;background:#eaf1f8;border:1px solid #d5e1ee;border-radius:9px;color:#263d52;font-size:13px;line-height:1.4;font-weight:550}.food-info b{color:#182f45}
-input[type=range]{padding:0;accent-color:var(--green)}.qty{font-size:19px;font-weight:800;color:var(--green)}.tag{font-size:11px;padding:3px 8px;border-radius:20px;background:var(--soft)}
-.grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px}.muted{color:var(--muted)}
-details{border-top:1px solid var(--line);padding:10px 0}summary{font-weight:650;cursor:pointer}
-@media(max-width:520px){main{padding:10px}.card{padding:12px}.grid2{grid-template-columns:1fr}.week{gap:3px}.day{font-size:11px;padding:8px 0}}
-</style></head>
+:root{--bg:#f3f6f2;--card:#fff;--ink:#1b2a21;--muted:#65736a;--line:#dce5dc;--green:#216847;--soft:#e8f2eb;--gold:#fff4d9}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.5 system-ui,-apple-system,Segoe UI,sans-serif}
+header{background:#17251f;color:#fff;padding:22px 16px}header .wrap,main{max-width:980px;margin:auto}h1{font-size:23px;margin:0 0 4px}header p{margin:0;color:#d5e0d8}
+main{padding:16px;display:grid;gap:14px}.card{background:var(--card);border:1px solid var(--line);border-radius:15px;padding:15px;box-shadow:0 2px 8px #14271b08}
+h2{font-size:18px;margin:0 0 10px}h3{font-size:16px;margin:0 0 8px}.muted{color:var(--muted);font-size:13px}
+.daynav{display:flex;gap:9px;align-items:center;flex-wrap:wrap}.daynav button{border:1px solid var(--line);background:#fff;border-radius:9px;padding:9px 13px;color:var(--ink);font:inherit;cursor:pointer}.daynav .arrow{font-size:20px;min-width:42px}.daynav button:disabled{opacity:.35}
+.days{display:grid;grid-template-columns:repeat(7,1fr);gap:6px;margin-top:12px}.days button{padding:8px 3px;font-size:12px}.days button.active{background:var(--green);border-color:var(--green);color:#fff}.days b{display:block;font-size:16px}
+.meals{display:grid;grid-template-columns:1fr;gap:12px}.meal{border:1px solid var(--line);border-radius:12px;padding:13px;min-width:0}.mealhead{display:flex;justify-content:space-between;gap:8px;align-items:center;margin:0;cursor:pointer;list-style:none}.mealhead::-webkit-details-marker{display:none}.mealhead h2{margin:0}.mealhead .chevron{transition:transform .18s ease;font-size:18px;color:var(--muted)}details[open] .chevron{transform:rotate(180deg)}.mealbody{padding-top:10px}.kcal{background:var(--soft);color:var(--green);font-weight:750;padding:4px 9px;border-radius:20px;white-space:nowrap}
+.group{margin-top:12px}.group h4{margin:0 0 5px;color:var(--green);font-size:13px;text-transform:uppercase;letter-spacing:.04em}.foodlist{display:grid;grid-template-columns:repeat(auto-fit,minmax(155px,1fr));gap:8px}.food{display:flex;flex-direction:column;justify-content:space-between;gap:3px;padding:9px 11px;border:1px solid var(--line);border-radius:10px;background:#fbfdfb;min-width:0}.qty{font-weight:750;color:var(--green);white-space:nowrap}.note{background:var(--gold);padding:11px 13px;border-radius:10px;font-size:13px}
+.summary{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}.stat{background:var(--soft);border-radius:10px;padding:11px}.stat b{display:block;font-size:19px}.tag{display:inline-block;background:#edf0ed;border-radius:7px;padding:2px 7px;font-size:12px;color:#45534a}
+footer{text-align:center;color:var(--muted);font-size:12px;padding:8px 0 24px}
+@media(max-width:700px){.meals{grid-template-columns:1fr}.foodlist{grid-template-columns:repeat(2,minmax(0,1fr))}}
+</style>
+</head>
 <body>
-<header><div class="wrap"><h1>Planner ricomposizione · 2.600 kcal</h1><p>35 giorni · lunedì 2 novembre – domenica 6 dicembre 2026 · media 2.600 kcal/die</p></div></header>
+<header><div class="wrap"><h1>Planner ricomposizione · guida porzioni</h1><p>35 giorni · 2 novembre – 6 dicembre 2026 · riferimento 2.600 kcal al giorno</p></div></header>
 <main>
 <section class="card">
- <div class="row between"><div><div class="small">GIORNO SELEZIONATO</div><h2 id="dateLabel">—</h2><span class="pill" id="dayType">—</span><div class="small" style="margin-top:6px">Obiettivo: 2.600 kcal al giorno, tutti i giorni</div></div><div class="row"><button class="outline" id="todayBtn">Oggi</button><button class="outline" id="prevBtn">←</button><button class="outline" id="nextBtn">→</button></div></div>
- <div class="week" id="week"></div>
- <div class="row between" style="margin-top:14px"><span class="small" id="progressText">Pasti confermati</span><b id="progressPct">0%</b></div><div class="progress"><div id="progressBar"></div></div>
+<div class="daynav">
+<button class="arrow" id="prevBtn" aria-label="Giorno precedente">‹</button>
+<button id="todayBtn">Oggi</button>
+<button class="arrow" id="nextBtn" aria-label="Giorno successivo">›</button>
+<strong id="dateLabel"></strong>
+</div>
 </section>
-<section class="card">
- <div class="row between"><h2 style="margin:0">I pasti di oggi</h2><button class="outline" id="resetDay">Ripristina scelte</button></div>
- <div id="meals"></div>
-</section>
-<section class="card" id="summaryCard">
- <h2>Riepilogo nutrizionale</h2>
- <div id="dailySummary"></div>
- <div style="height:1px;background:var(--line);margin:14px 0"></div>
- <div class="row between"><h3 style="margin:0">Media settimanale</h3><span class="pill" id="weekRange">—</span></div>
- <div id="weeklySummary" style="margin-top:10px"></div>
- <p class="small" style="margin-bottom:0">Macro e calorie sono calcolati dai valori medi per 100 g degli alimenti selezionati. Per maggiore precisione usa i valori nutrizionali riportati sulle confezioni. Il limite è di 20 g di grassi totali per pasto e 60 g al giorno: vengono conteggiati anche quelli naturalmente presenti in pane, pasta, carne, uova e negli altri alimenti.</p>
-</section>
-<section class="card">
- <h2>Dati e backup</h2><p class="small">Le scelte e le conferme vengono salvate nel browser di questo dispositivo. Esporta un backup per trasferire i dati manualmente su un altro dispositivo.</p>
- <div class="row"><button class="outline" id="export">Esporta backup</button><label class="outline" style="padding:10px 12px;border-radius:10px;cursor:pointer">Importa backup<input id="import" type="file" accept=".json" style="display:none"></label></div>
-</section>
+<section class="meals" id="meals"></section>
+<footer>Guida porzioni personale · dati salvati solo nella pagina, nessun account richiesto</footer>
 </main>
 <script>
-(()=>{
+const start=new Date(2026,10,2),end=new Date(2026,11,6);
+const now=new Date();
+const localToday=new Date(now.getFullYear(),now.getMonth(),now.getDate());
+let selected=new Date(Math.min(Math.max(localToday.getTime(),start.getTime()),end.getTime()));
 const $=id=>document.getElementById(id);
-const foods=[
- {n:'Pasta secca',c:'carb',v:72,k:359,u:'cruda'},
- {n:'Riso',c:'carb',v:80,k:360,u:'crudo'},
- {n:'Cous cous',c:'carb',v:72,k:376,u:'secco'},
- {n:'Farro',c:'carb',v:67,k:335,u:'crudo'},
- {n:'Pane',c:'carb',v:50,k:260,u:'tal quale'},
- {n:'Patate',c:'carb',v:17,k:77,u:'crude, pulite'},
- {n:'Gnocchi di patate',c:'carb',v:32,k:160,u:'tal quali'},
- {n:'Farina',c:'carb',v:76,k:364,u:'secca; valore medio'},
- {n:'Fiocchi d’avena',c:'carb',v:60,k:372,u:'secchi'},
- {n:'Gallette di riso',c:'carb',v:80,k:387,u:'tal quali'},
- {n:'Pollo',c:'protein',v:23,k:120,u:'crudo'},
- {n:'Tacchino',c:'protein',v:24,k:114,u:'crudo'},
- {n:'Merluzzo',c:'protein',v:18,k:82,u:'crudo'},
- {n:'Tonno al naturale',c:'protein',v:25,k:116,u:'sgocciolato'},
- {n:'Manzo magro',c:'protein',v:21,k:150,u:'crudo'},
- {n:'Salmone',c:'protein',v:20,k:208,u:'crudo'},
- {n:'Gamberi',c:'protein',v:20,k:99,u:'puliti'},
- {n:'Uova intere',c:'protein',v:13,k:143,u:'senza guscio'},
- {n:'Skyr',c:'protein',v:11,k:63,u:'tal quale'},
- {n:'Yogurt greco 0%',c:'protein',v:10,k:59,u:'tal quale'},
- {n:'Tofu',c:'protein',v:15,k:144,u:'tal quale'},
- {n:'Proteine in polvere',c:'protein',v:73.333,k:400,u:'polvere: 22 g proteine ogni 30 g'},
- {n:'Olio EVO',c:'fat',v:100,k:884,u:'tal quale'},
- {n:'Mandorle',c:'fat',v:52,k:579,u:'tal quali'},
- {n:'Noci',c:'fat',v:65,k:654,u:'tal quali'},
- {n:'Burro d’arachidi',c:'fat',v:50,k:588,u:'tal quale'},
- {n:'Avocado',c:'fat',v:15,k:160,u:'polpa'},
- {n:'Cioccolato fondente',c:'fat',v:42,k:600,u:'valore medio indicativo; varia in base alla percentuale di cacao'},
- {n:'Formaggi generici',c:'fat',v:25,k:330,u:'valore medio indicativo; varia molto in base al tipo di formaggio'},
- {n:'Cacao amaro in polvere',c:'fat',v:14,k:355,u:'polvere; contiene anche carboidrati e proteine'}
-];
-const macroData={
-'Pasta secca':{mc:72,mp:13,mf:1.5},
-'Riso':{mc:80,mp:7,mf:0.6},
-'Cous cous':{mc:72,mp:13,mf:0.6},
-'Farro':{mc:67,mp:15,mf:2.5},
-'Pane':{mc:50,mp:8.5,mf:3.2},
-'Patate':{mc:17,mp:2,mf:0.1},
-'Gnocchi di patate':{mc:32,mp:3.5,mf:0.3},
-'Farina':{mc:76,mp:10,mf:1},
-'Fiocchi d’avena':{mc:60,mp:13,mf:7},
-'Gallette di riso':{mc:80,mp:7.5,mf:3},
-'Pollo':{mc:0,mp:23,mf:2.6},
-'Tacchino':{mc:0,mp:24,mf:1.5},
-'Merluzzo':{mc:0,mp:18,mf:0.7},
-'Tonno al naturale':{mc:0,mp:25,mf:1},
-'Manzo magro':{mc:0,mp:21,mf:8},
-'Salmone':{mc:0,mp:20,mf:13},
-'Gamberi':{mc:0,mp:20,mf:0.8},
-'Uova intere':{mc:1.1,mp:13,mf:10},
-'Skyr':{mc:4,mp:11,mf:0.2},
-'Yogurt greco 0%':{mc:3.6,mp:10,mf:0.4},
-'Tofu':{mc:2,mp:15,mf:8.7},
-'Proteine in polvere':{mc:8,mp:73.333,mf:6},
-'Olio EVO':{mc:0,mp:0,mf:100},
-'Mandorle':{mc:6,mp:21,mf:52},
-'Noci':{mc:7,mp:15,mf:65},
-'Burro d’arachidi':{mc:20,mp:25,mf:50},
-'Avocado':{mc:9,mp:2,mf:15},
-'Cioccolato fondente':{mc:46,mp:7.5,mf:42},
-'Formaggi generici':{mc:2,mp:25,mf:25},
-'Cacao amaro in polvere':{mc:14,mp:20,mf:14}
+const fmt=d=>d.toLocaleDateString('it-IT',{weekday:'long',day:'numeric',month:'long',year:'numeric'});
+const foodGroups={
+carb:[
+['Pasta','100 g','150 g','90 g','70 g','90 g'],
+['Riso','100 g','150 g','90 g','70 g','90 g'],
+['Cous cous','100 g','150 g','90 g','70 g','90 g'],
+
+['Fiocchi d’avena','100 g','150 g','90 g','70 g','90 g'],
+
+['Pane','150 g','200 g','120 g','100 g','120 g'],
+['Gnocchi di patate','225 g','350 g','200 g','160 g','200 g'],
+['Patate','500 g','700 g','400 g','350 g','400 g']
+],
+protein:[
+['Pollo','150 g','200 g','150 g','100 g','120 g'],
+['Manzo magro','150 g','200 g','150 g','100 g','120 g'],
+['Merluzzo','200 g','250 g','200 g','140 g','150 g'],
+['Tonno sgocciolato','150 g','150 g','150 g','110 g','150 g'],
+['Salmone','150 g','200 g','150 g','100 g','120 g'],
+['Gamberi','200 g','250 g','200 g','140 g','150 g'],
+['Uova intere','3 uova','4 uova','3 uova','2 uova','2 uova'],
+['Yogurt greco','200 g','250 g','200 g','150 g','250 g'],
+['Fagioli','150 g','300 g','150 g','110 g','300 g'],
+['Proteine in polvere','30 g','30 g','30 g','20 g','30 g']
+],
+fat:[
+['Olio extravergine d’oliva','15 g','15 g','15 g','10 g','15 g'],
+['Mandorle','20 g','20 g','20 g','15 g','20 g'],
+['Cioccolato fondente','20 g','20 g','20 g','15 g','20 g'],
+['Cacao amaro','30 g','30 g','30 g','20 g','30 g']
+]};
+function dayMeals(d){
+ const w=d.getDay();
+ if(w===6)return [{name:'Pranzo',time:'13:00',kcal:700,kind:'lunch'},{name:'Cena libera',time:'sera',kcal:1900,kind:'free'}];
+ if(w===2||w===4)return [
+ {name:'Pranzo',time:'13:00',kcal:700,kind:'lunch'},
+ {name:'Spuntino',time:'17:00',kcal:700,kind:'snack'},
+ {name:'Cena',time:'21:00',kcal:700,kind:'shortDinner'},
+ {name:'Pre-nanna',time:'prima di dormire',kcal:500,kind:'smallNight'}];
+ return [{name:'Pranzo',time:'13:00',kcal:700,kind:'lunch'},
+ {name:'Cena',time:'20:00',kcal:1200,kind:'dinner'},
+ {name:'Pre-nanna',time:'prima di dormire',kcal:700,kind:'night'}];
+}
+function groupedFoods(items, col){
+ const groups=new Map();
+ items.forEach(item=>{
+  const qty=item[col];
+  if(!groups.has(qty))groups.set(qty,[]);
+  groups.get(qty).push(item[0]);
+ });
+ return [...groups.entries()].map(([qty,names])=>({names:names.join(' / '),qty}));
+}
+function foodCards(items,col){
+ return '<div class="foodlist">'+groupedFoods(items,col).map(g=>`<div class="food"><span>${g.names}</span><span class="qty">${g.qty}</span></div>`).join('')+'</div>';
+}
+function render(){
+ $('dateLabel').textContent=fmt(selected);
+ const meals=dayMeals(selected);
+ $('prevBtn').disabled=selected<=start;
+ $('nextBtn').disabled=selected>=end;
+ $('meals').innerHTML='';
+ meals.forEach(m=>{
+  let el=document.createElement('details');el.className='card meal';
+  let inner=`<summary class="mealhead"><div><h2>${m.name}</h2><span class="muted">${m.time}</span></div><div style="display:flex;align-items:center;gap:10px"><span class="kcal">${m.kcal.toLocaleString('it-IT')} kcal</span><span class="chevron">⌄</span></div></summary><div class="mealbody">`;
+  if(m.kind==='free'){inner+=`<p>Cena libera: budget di riferimento <b>1.900 kcal</b>, inclusa nel totale del sabato.</p>`}
+  else{
+   const ci= m.kind==='dinner'?2:m.kind==='shortDinner'?4:m.kind==='smallNight'?3:1;
+   const label=ci===1?'porzione pasto da 700 kcal':ci===2?'porzione cena da 1.200 kcal':ci===4?'porzione cena da 700 kcal':'porzione pre-nanna da 500 kcal';
+   inner+=`<span class="tag">${label}</span>`;
+   inner+=`<div class="group"><h4>Carboidrati · scegli un'alternativa</h4>`;
+   inner+=foodCards(foodGroups.carb,ci);
+   inner+=`</div><div class="group"><h4>Proteine · scegli un'alternativa</h4>`;
+   inner+=foodCards(foodGroups.protein,ci);
+   inner+=`</div><div class="group"><h4>Grassi · porzioni di riferimento</h4>`;
+   inner+=foodCards(foodGroups.fat,ci);
+   if(m.name==='Pranzo'||m.name==='Cena')inner+=`<div class="group"><h4>Verdure</h4><div class="foodlist"><div class="food"><span>Verdure a scelta</span><span class="qty">250 g</span></div></div></div>`;
+  }
+  inner+='</div>';
+  el.innerHTML=inner;$('meals').append(el);
+ });
+}
+function moveDay(delta){
+ const d=new Date(selected);d.setDate(d.getDate()+delta);
+ if(d>=start&&d<=end){selected=d;render();}
+}
+$('prevBtn').onclick=()=>moveDay(-1);
+$('nextBtn').onclick=()=>moveDay(1);
+$('todayBtn').onclick=()=>{
+ const t=new Date();
+ const today=new Date(t.getFullYear(),t.getMonth(),t.getDate());
+ selected=new Date(Math.min(Math.max(today.getTime(),start.getTime()),end.getTime()));
+ render();
 };
-foods.forEach(f=>Object.assign(f,macroData[f.n]||{mc:0,mp:0,mf:0}));
-const targets={
- lunch:{carb:75,protein:40,fat:22,kcal:650,veg:250},
- dinner:{carb:120,protein:65,fat:35,kcal:1050,veg:250},
- tueLunch:{carb:65,protein:35,fat:20,kcal:550,veg:250},
- tueDinner:{carb:100,protein:55,fat:30,kcal:900,veg:250},
- snack:{carb:90,protein:45,fat:27,kcal:783,veg:0},
- night:{carb:95,protein:50,fat:28,kcal:833,veg:0},
- night400:{carb:33,protein:20,fat:10,kcal:300,veg:0},
- satLunch:{carb:90,protein:50,fat:27,kcal:800,veg:250}
-};
-let data={};try{data=JSON.parse(localStorage.getItem('planner35v8_kcal')||'{}')}catch(e){}
-// One-time migration: clear old auto-suggested quantities that earlier releases
-// accidentally saved as manual overrides. Preserve food choices, shares and done flags.
-try{
- if(localStorage.getItem('planner35v8_qty_defaults_v3')!=='1'){
-  Object.values(data).forEach(day=>{
-   (day?.meals||[]).forEach(meal=>{
-    ['carb','protein','fat'].forEach(cat=>(meal.choices?.[cat]||[]).forEach(item=>{delete item.qty;}));
-   });
-  });
-  localStorage.setItem('planner35v8_kcal',JSON.stringify(data));
-  localStorage.setItem('planner35v8_qty_defaults_v3','1');
- }
-}catch(e){}
-// Rebalance existing multi-food categories: older builds could leave the
-// second/third item at 0%, making its suggested quantity effectively zero.
-try{
- if(localStorage.getItem('planner35v8_equal_food_shares_v1')!=='1'){
-  Object.values(data).forEach(day=>(day?.meals||[]).forEach(meal=>{
-   ['carb','protein','fat'].forEach(cat=>{
-    const arr=meal.choices?.[cat]||[];
-    if(arr.length)arr.forEach(item=>{item.share=1/arr.length;});
-   });
-  }));
-  localStorage.setItem('planner35v8_kcal',JSON.stringify(data));
-  localStorage.setItem('planner35v8_equal_food_shares_v1','1');
- }
-}catch(e){}
-const start=new Date(2026,10,2),end=new Date(2026,11,6);let selected=new Date(start);
-const key=d=>[d.getFullYear(),String(d.getMonth()+1).padStart(2,'0'),String(d.getDate()).padStart(2,'0')].join('-');
-const names=['Domenica','Lunedì','Martedì','Mercoledì','Giovedì','Venerdì','Sabato'];
-const copy=o=>JSON.parse(JSON.stringify(o));
-function defaults(d){let dow=d.getDay(),arr=[{name:'Pranzo · 13:00',type:'lunch'},{name:'Cena · 20:00',type:'dinner'},{name:'Pre-nanna',type:'night'}];if(dow===2||dow===4)arr=[{name:'Pranzo · 13:00',type:'tueLunch'},{name:'Spuntino · 17:00',type:'snack'},{name:'Cena · 21:00',type:'tueDinner'},{name:'Pre-nanna',type:'night400'}];if(dow===6)arr=[{name:'Pranzo · 13:00',type:'satLunch'},{name:'Cena · Sgarro libero',type:'free'}];return arr.map(p=>({...p,choices:{carb:[],protein:[],fat:[]},veg:targets[p.type]?.veg||0,done:false}))}
-function meals(d){let k=key(d);if(!data[k])data[k]={meals:defaults(d)};return data[k].meals}
-function save(){localStorage.setItem('planner35v8_kcal',JSON.stringify(data))}
-const FAT_LIMIT=20, DAILY_FAT_LIMIT=60;
-function macroEnergy(mealType,macro){const t=targets[mealType];if(!t)return 0;return t[macro]*(macro==='fat'?9:4)}
-function mealQuantities(meal,mealBudget,mealFatCap=FAT_LIMIT){
- const type=meal.type,t=targets[type],out={carb:[],protein:[],fat:[]};if(!t)return out;
- const ci=meal.choices.carb||[],pi=meal.choices.protein||[],fi=meal.choices.fat||[];
- // Keep the meal's carb/protein energy split anchored to its target macros.
- // Missing a food category must NOT redirect that category's calories to the
- // only selected category (e.g. pasta alone should not consume the whole meal budget).
- const cw=macroEnergy(type,'carb'),pw=macroEnergy(type,'protein'),tw=cw+pw;
- const cr=tw?cw/tw:0,pr=tw?pw/tw:0;
- const shares=arr=>arr.length?arr.map(()=>1/arr.length):[];
- function candidate(base){
-  let incidental=0;
-  ['carb','protein'].forEach(cat=>{
-   const arr=meal.choices[cat]||[],sh=shares(arr),portion=base*(cat==='carb'?cr:pr);
-   out[cat]=arr.map((it,j)=>{const food=foods.find(x=>x.n===it.n),q=food&&food.k?portion*(sh[j]||0)/food.k*100:0;if(food)incidental+=q*food.mf/100;return q;});
-  });
-  const sh=shares(fi),density=fi.reduce((a,it,j)=>{const f=foods.find(x=>x.n===it.n);return a+(f?f.mf*(sh[j]||0):0)},0);
-  const rem=Math.max(0,mealFatCap-incidental);
-  out.fat=fi.map((it,j)=>{const f=foods.find(x=>x.n===it.n);return f&&density>0?rem*(sh[j]||0)/(density/100):0;});
-  let fk=0,allFat=incidental;
-  fi.forEach((it,j)=>{const f=foods.find(x=>x.n===it.n);if(f){fk+=out.fat[j]*f.k/100;allFat+=out.fat[j]*f.mf/100;}});
-  return {kcal:base+fk,fat:allFat};
- }
- let lo=0,hi=mealBudget;
- for(let n=0;n<50;n++){const mid=(lo+hi)/2,r=candidate(mid);if(r.kcal>mealBudget+0.01||r.fat>mealFatCap+0.01)hi=mid;else lo=mid;}
- candidate(lo);
- // Apply manual carbohydrate/protein quantities before calculating the fat allowance.
- // Their intrinsic fat must consume the meal's 20 g cap first (e.g. 150 g oats at
- // 7 g fat/100 g use 10.5 g, leaving 9.5 g for the selected fat foods).
- ['carb','protein'].forEach(cat=>(meal.choices[cat]||[]).forEach((it,j)=>{
-  if(Number.isFinite(Number(it.qty))&&it.qty!=='' )out[cat][j]=Math.max(0,Number(it.qty));
- }));
- const actualIncidentalFat=['carb','protein'].reduce((sum,cat)=>sum+(meal.choices[cat]||[]).reduce((a,it,j)=>{
-  const food=foods.find(x=>x.n===it.n);return a+(food?(out[cat][j]||0)*food.mf/100:0);
- },0),0);
- const remainingFatForFoods=Math.max(0,mealFatCap-actualIncidentalFat);
- const fatChoices=meal.choices.fat||[];
- const fatShares=shares(fatChoices);
- const fatDensity=fatChoices.reduce((sum,it,j)=>{
-  const food=foods.find(x=>x.n===it.n);return sum+(food?food.mf*(fatShares[j]||0):0);
- },0);
- out.fat=fatChoices.map((it,j)=>{
-  const food=foods.find(x=>x.n===it.n);
-  return food&&fatDensity>0?remainingFatForFoods*(fatShares[j]||0)/(fatDensity/100):0;
- });
- // Explicit quantities in the fat category remain user-controlled.
- fatChoices.forEach((it,j)=>{
-  if(Number.isFinite(Number(it.qty))&&it.qty!=='' )out.fat[j]=Math.max(0,Number(it.qty));
- });
- return out;
-}
-function withoutManualQuantities(meal){
- const clone={...meal,choices:{}};
- ['carb','protein','fat'].forEach(cat=>{clone.choices[cat]=(meal.choices[cat]||[]).map(item=>{const x={...item};delete x.qty;return x;});});
- return clone;
-}
-function suggestedQuantities(meal,budget,fatCap,forCategory=null){
- // For carb/protein suggestions, clear every manual override so the percentage
- // always compares against the original target. For a fat suggestion, retain
- // manually entered carb/protein grams because their intrinsic fat uses part of
- // the 20 g meal / 60 g daily allowance; clear only manual fat quantities.
- const clone={...meal,choices:{}};
- ['carb','protein','fat'].forEach(cat=>{
-  clone.choices[cat]=(meal.choices[cat]||[]).map(item=>{
-   const x={...item};
-   if(forCategory!=='fat'||cat==='fat')delete x.qty;
-   return x;
-  });
- });
- return mealQuantities(clone,budget,fatCap);
-}
-function mealFoodKcal(meal,quantities){
- let total=0;
- ['carb','protein','fat'].forEach(cat=>(meal.choices[cat]||[]).forEach((item,j)=>{
-  const food=foods.find(x=>x.n===item.n);
-  if(food)total+=(quantities[cat][j]||0)*food.k/100;
- }));
- return total;
-}
-function dayBaseBudget(d){return 2600}
-function mealBudgetForDate(d,index,carryIn){
- const arr=meals(d);
- // Allocate the fixed 2,600 kcal daily budget across the day's meal slots.
- // The displayed value is this meal's own allocation, never a running balance.
- const weights=arr.map(m=>m.type==='free'?1800:(targets[m.type]?.kcal||0));
- const total=weights.reduce((a,b)=>a+b,0)||1;
- return dayBaseBudget(d)*weights[index]/total;
-}
-function dayTotals(d,carryIn=0){
- const arr=meals(d);let kcal=0,c=0,p=0,f=0,spent=0,hasData=false,maxMealFat=0;
- let remainingFat=DAILY_FAT_LIMIT;
- arr.forEach((meal,i)=>{
-  if(meal.type==='free'){kcal+=1800;spent+=1800;hasData=hasData||meal.done;return;}
-  const hasChoices=['carb','protein','fat'].some(cat=>(meal.choices[cat]||[]).length);
-  if(hasChoices||meal.done)hasData=true;
-  const budget=mealBudgetForDate(d,i,carryIn);
-  const qs=mealQuantities(meal,budget,Math.min(FAT_LIMIT,remainingFat));
-  ['carb','protein','fat'].forEach(cat=>(meal.choices[cat]||[]).forEach((item,j)=>{
-   const food=foods.find(x=>x.n===item.n);if(!food)return;
-   const q=Math.round((qs[cat][j]||0)*10)/10;
-   const ek=q*food.k/100;kcal+=ek;spent+=ek;
-   c+=q*food.mc/100;p+=q*food.mp/100;f+=q*food.mf/100;
-  }));
-  const mealFat=['carb','protein','fat'].reduce((sum,cat)=>sum+(meal.choices[cat]||[]).reduce((a,it,j)=>{const food=foods.find(x=>x.n===it.n);return a+(food?(qs[cat][j]||0)*food.mf/100:0)},0),0);
-  maxMealFat=Math.max(maxMealFat,mealFat);
-  remainingFat=Math.max(0,remainingFat-mealFat);
- });
- return {kcal,c,p,f,spent,hasData,remainingFat,maxMealFat};
-}
-function carryBefore(date){return 0}
-function currentMealBudget(index){
- const carry=carryBefore(selected);
- return mealBudgetForDate(selected,index,carry);
-}
-function selectOptions(cat,selected){return foods.filter(f=>f.c===cat).map(f=>`<option value="${f.n}" ${f.n===selected?'selected':''}>${f.n}</option>`).join('')}
-function remainingFatBefore(meal,index){
- let used=0;
- meals(selected).slice(0,index).forEach((m,i)=>{
-  if(m.type==='free')return;
-  const qs=mealQuantities(m,mealBudgetForDate(selected,i,carryBefore(selected)),Math.min(FAT_LIMIT,DAILY_FAT_LIMIT-used));
-  ['carb','protein','fat'].forEach(cat=>(m.choices[cat]||[]).forEach((it,j)=>{const f=foods.find(x=>x.n===it.n);if(f)used+=(qs[cat][j]||0)*f.mf/100;}));
- });
- return Math.max(0,DAILY_FAT_LIMIT-used);
-}
-function componentUI(p,i,cat,j,item){
- const f=foods.find(x=>x.n===item.n)||foods.find(x=>x.c===cat);
- const share=p.choices[cat].length?1/p.choices[cat].length:0;
- const cap=remainingFatBefore(p,i),budget=currentMealBudget(i);
- const suggestedArr=suggestedQuantities(p,budget,Math.min(FAT_LIMIT,cap),cat);
- const suggested=Math.round((suggestedArr[cat][j]||0)*10)/10;
- const manual=item.qty!==undefined&&item.qty!==''&&Number.isFinite(Number(item.qty));
- const q=manual?Math.max(0,Number(item.qty)):suggested;
- const targetPct=suggested>=1?Math.round(q/suggested*100):null;
- const over=manual&&q>suggested+0.05;
- const contribution=q*(f?(cat==='carb'?f.mc:cat==='protein'?f.mp:f.mf)/100:0);
- const kcalContribution=q*(f?f.k/100:0);
- const macroName=cat==='carb'?'carboidrati':cat==='protein'?'proteine':'grassi';
- return `<div class="component">
- <div class="row between"><b>${cat==='carb'?'Carboidrato':cat==='protein'?'Proteina':'Grassi'} ${j+1}</b><button class="outline" data-remove="${i},${cat},${j}">Rimuovi</button></div>
- <label>Seleziona alimento</label><select data-food="${i},${cat},${j}">${selectOptions(cat,item.n)}</select>
- <div class="row between" style="margin-top:8px"><span class="small">Ripartizione scelta: ${Math.round(share*100)}% · Rispetto alla quantità suggerita: <b style="color:${over?'#a45b12':'inherit'}">${targetPct===null?'target < 1 g':targetPct+'%'}</b></span><b class="qty">${Number.isInteger(q)?q:q.toFixed(1).replace('.',',')} g</b></div>
- <label style="margin-top:8px">Quantità personalizzata (g)</label>
- <div class="row"><div class="field"><input type="number" min="0" step="0.1" inputmode="decimal" value="${manual?q:suggested}" data-qty="${i},${cat},${j}" aria-label="Quantità personalizzata in grammi"></div>${manual?`<button class="outline" data-reset-qty="${i},${cat},${j}">Usa suggerita</button>`:''}</div>
- ${over?`<div class="food-info" style="background:#fff1df;border-color:#efd2a8;color:#704817"><b>Quantità aumentata (${targetPct===null?'oltre il target disponibile':targetPct+'% del target'}):</b> ${fmt((q-suggested)*f.k/100)} kcal in più rispetto al suggerimento. Il budget del pasto successivo si riduce.</div>`:''}
- <div class="food-info">${f?`<b>${f.n}:</b> ${f.k} kcal · C ${f.mc} g · P ${f.mp} g · G ${f.mf} g ogni 100 g. Con la quantità inserita apporta circa <b>${kcalContribution.toFixed(0)} kcal</b> e ${contribution.toFixed(1).replace('.',',')} g di ${macroName}.`:''}<br>Il target percentuale confronta i grammi inseriti con la quantità suggerita senza personalizzazioni.</div>
- </div>`;
-}
-function calcDay(d){
- const carry=0,t=dayTotals(d,carry),base=dayBaseBudget(d);
- return {...t,budget:0,planned:base,carry,remaining:base-t.spent,unknown:[]};
-}
-function fmt(n,d=0){return n.toLocaleString('it-IT',{minimumFractionDigits:d,maximumFractionDigits:d});}
-function renderSummaries(){
- const t=calcDay(selected);
- $('dailySummary').innerHTML=`<div class="grid2">
-  <div class="group"><div class="small">CALORIE DEGLI ALIMENTI SELEZIONATI</div><div class="qty">${fmt(t.kcal)} kcal</div></div>
-  <div class="group"><div class="small">BUDGET DISPONIBILE OGGI</div><div class="qty">${fmt(t.planned)} kcal</div></div>
- </div>
- <div class="grid2" style="margin-top:8px">
-  <div class="group"><b>Carboidrati</b><div class="qty">${fmt(t.c,1)} g</div></div>
-  <div class="group"><b>Proteine</b><div class="qty">${fmt(t.p,1)} g</div></div>
-  <div class="group"><b>Grassi</b><div class="qty">${fmt(t.f,1)} / 60 g</div></div>
-  <div class="group"><b>Calorie residue</b><div class="qty">${fmt(t.remaining)} kcal</div><div class="small">Si riportano ai giorni successivi</div></div>
-  <div class="group"><b>Energia dai cibi</b><div class="qty">${fmt(t.kcal)} kcal</div></div>
- </div>
- ${t.unknown.length?'<p class="small">La cena libera è conteggiata come budget calorico, ma non nei macro: inserisci gli alimenti effettivi per ottenere il totale nutrizionale completo.</p>':''}`;
- const offset=(selected.getDay()+6)%7;
- const ws=new Date(selected);ws.setDate(selected.getDate()-offset);
- const we=new Date(ws);we.setDate(ws.getDate()+6);
- const from=ws<start?new Date(start):ws, to=we>end?new Date(end):we;
- $('weekRange').textContent=`${from.toLocaleDateString('it-IT',{day:'2-digit',month:'short'})} – ${to.toLocaleDateString('it-IT',{day:'2-digit',month:'short'})}`;
- let sum={kcal:0,planned:0,c:0,p:0,f:0,carry:0,days:0,budget:0};
- for(let d=new Date(from);d<=to;d.setDate(d.getDate()+1)){
-  const x=calcDay(d);sum.kcal+=x.kcal;sum.planned+=dayBaseBudget(d);sum.c+=x.c;sum.p+=x.p;sum.f+=x.f;sum.carry+=x.carry;sum.budget+=x.budget;sum.days++;
- }
- const avg=k=>sum[k]/(sum.days||1);
- $('weeklySummary').innerHTML=`<div class="grid2">
-  <div class="group"><div class="small">MEDIA CALORIE DA ALIMENTI / GIORNO</div><div class="qty">${fmt(avg('kcal'))} kcal</div></div>
-  <div class="group"><div class="small">MEDIA PIANIFICATA / GIORNO</div><div class="qty">${fmt(avg('planned'))} kcal</div></div>
-  <div class="group"><b>Carboidrati medi</b><div class="qty">${fmt(avg('c'),1)} g/die</div></div>
-  <div class="group"><b>Proteine medie</b><div class="qty">${fmt(avg('p'),1)} g/die</div></div>
-  <div class="group"><b>Grassi medi</b><div class="qty">${fmt(avg('f'),1)} g/die</div></div>
- </div><p class="small">Media calcolata su ${sum.days} giorni della settimana mostrata. Ogni giornata ha un budget fisso di 2.600 kcal, suddiviso tra i pasti: le quote dei pasti non sono cumulative e non si sommano ai residui dei pasti precedenti. I macro sono calcolati sulle quantità personalizzate.</p>`;
-}
-function render(){let d=selected,k=key(d),m=meals(d);$('dateLabel').textContent=d.toLocaleDateString('it-IT',{weekday:'long',day:'numeric',month:'long',year:'numeric'});$('dayType').textContent=d.getDay()===6?'Sabato · 2.600 kcal totali, sgarro incluso':([2,4].includes(d.getDay())?'Spuntino 17:00 · cena 21:00':'Cena 20:00');$('prevBtn').disabled=d<=start;$('nextBtn').disabled=d>=end;
-const mondayOffset=(d.getDay()+6)%7;const weekStart=new Date(d);weekStart.setDate(d.getDate()-mondayOffset);$('week').innerHTML=Array.from({length:7},(_,i)=>{let x=new Date(weekStart);x.setDate(weekStart.getDate()+i);if(x<start||x>end)return `<span class="day" style="visibility:hidden"></span>`;return `<button class="day ${key(x)===k?'active':''}" data-date="${key(x)}">${['Lun','Mar','Mer','Gio','Ven','Sab','Dom'][i]}<br>${x.getDate()}</button>`}).join('');$('week').querySelectorAll('button').forEach(b=>b.onclick=()=>setDate(b.dataset.date));
-$('meals').innerHTML=m.map((p,i)=>{if(p.type==='free')return `<div class="meal"><div class="row between"><b>${p.name}</b><span class="pill">1.800 kcal · budget sgarro</span></div><p class="small">Budget indicativo per la cena libera: 1.800 kcal. Il pranzo è impostato a circa 800 kcal: il totale del sabato è 2.600 kcal, sgarro incluso.</p><button class="primary" data-done="${i}">${p.done?'✓ Già mangiato · Annulla':'✓ Ho mangiato'}</button></div>`;
-return `<div class="meal ${p.done?'done':''}"><div class="row between"><b>${p.name}</b><span class="pill">${fmt(currentMealBudget(i))} kcal disponibili</span></div><p class="small">Obiettivi macro indicativi: ${targets[p.type].carb} g carboidrati · ${targets[p.type].protein} g proteine · ${targets[p.type].fat} g grassi. Quota assegnata a questo pasto: ${fmt(currentMealBudget(i))} kcal · massimo 20 g di grassi nel pasto e 60 g al giorno. Puoi modificare liberamente i grammi: questa quota riguarda solo il pasto indicato e non include le calorie degli altri pasti. Verdure: ${p.veg||0} g.</p>
-${['carb','protein','fat'].map(cat=>`<div class="group"><div class="row between"><b>${cat==='carb'?'Carboidrati':cat==='protein'?'Proteine':'Grassi'}</b><button class="outline" data-add="${i},${cat}">+ Aggiungi alimento</button></div>${(p.choices[cat]||[]).map((it,j)=>componentUI(p,i,cat,j,it)).join('')||'<p class="small">Nessun alimento selezionato: premi Aggiungi alimento.</p>'}</div>`).join('')}
-${p.veg?`<div class="group"><b>Verdure</b><div class="small">Quantità indicativa: ${p.veg} g · scegli le verdure che preferisci.</div></div>`:''}
-<div class="row between" style="margin-top:12px"><span class="small">${p.done?'Pasto completato':'Da completare'}</span><button class="${p.done?'outline':'primary'}" data-done="${i}">${p.done?'✓ Già mangiato · Annulla':'✓ Ho mangiato'}</button></div></div>`}).join('');
-$('meals').querySelectorAll('[data-add]').forEach(b=>b.onclick=()=>{let [i,c]=b.dataset.add.split(',');let arr=m[+i].choices[c];if(arr.length>=3)return alert('Puoi aggiungere al massimo 3 alimenti per categoria.');let f=foods.find(x=>x.c===c&&!arr.some(y=>y.n===x.n));if(!f)return alert('Hai già inserito tutti gli alimenti disponibili.');arr.push({n:f.n,share:1/(arr.length+1)});arr.forEach(it=>{it.share=1/arr.length;});save();render()});
-$('meals').querySelectorAll('[data-remove]').forEach(b=>b.onclick=()=>{let [i,c,j]=b.dataset.remove.split(',');m[+i].choices[c].splice(+j,1);normalize(m[+i].choices[c]);save();render()});
-$('meals').querySelectorAll('[data-food]').forEach(s=>s.onchange=()=>{let [i,c,j]=s.dataset.food.split(',');m[+i].choices[c][+j].n=s.value;delete m[+i].choices[c][+j].qty;save();render()});
-$('meals').querySelectorAll('[data-share]').forEach(s=>s.oninput=()=>{let [i,c,j]=s.dataset.share.split(',');let arr=m[+i].choices[c],idx=+j,v=Number(s.value)/100;if(arr.length===1){v=1;}else{let others=arr.map((x,n)=>n).filter(n=>n!==idx);let remaining=1-v;let oldTotal=others.reduce((sum,n)=>sum+(arr[n].share||0),0);others.forEach(n=>{arr[n].share=oldTotal>0?remaining*(arr[n].share||0)/oldTotal:remaining/others.length;});}arr[idx].share=v;arr.forEach(it=>delete it.qty);save();render()});
-$('meals').querySelectorAll('[data-reset-qty]').forEach(b=>b.onclick=()=>{
- let [i,c,j]=b.dataset.resetQty.split(',');delete m[+i].choices[c][+j].qty;save();render();
-});
-$('meals').querySelectorAll('[data-qty]').forEach(inp=>inp.onchange=()=>{
- const parts=inp.dataset.qty.split(','),i=Number(parts[0]),c=parts[1],j=Number(parts[2]);
- const item=m[i].choices[c][j],food=foods.find(x=>x.n===item.n);
- const budget=currentMealBudget(i),fatCap=Math.min(FAT_LIMIT,remainingFatBefore(m[i],i));
- const raw=String(inp.value).trim().replace(',','.');
- const value=raw===''?null:Number(raw);
- if(value!==null&&(!Number.isFinite(value)||value<0)){
-  alert('Inserisci una quantità valida, pari o superiore a zero.');render();return;
- }
- if(value===null){delete item.qty;}else{item.qty=Math.round(value*10)/10;}
- const actual=mealQuantities(m[i],budget,fatCap);
- const actualMealKcal=mealFoodKcal(m[i],actual);
- const suggestedMealKcal=mealFoodKcal(m[i],suggestedQuantities(m[i],budget,fatCap));
- const delta=actualMealKcal-suggestedMealKcal;
- if(value!==null&&food&&Math.abs(delta)>0.5){
-  const direction=delta<0?'in meno':'in più';
-  const destination=m.slice(i+1).some(next=>next.type!=='free')?'al budget del pasto successivo':'al credito/debito dei giorni successivi';
-  alert(`Modifica salvata: ${fmt(Math.abs(delta))} kcal ${direction} rispetto alle quantità suggerite. La differenza viene conteggiata nel totale della giornata, senza modificare la quota mostrata per gli altri pasti.`);
- }
- const mealFat=['carb','protein','fat'].reduce((sum,cat)=>sum+(m[i].choices[cat]||[]).reduce((a,it,jj)=>{
-  const f=foods.find(x=>x.n===it.n);return a+(f?(actual[cat][jj]||0)*f.mf/100:0);
- },0),0);
- const dayFat=dayTotals(selected,carryBefore(selected)).f;
- if(mealFat>FAT_LIMIT+0.05||dayFat>DAILY_FAT_LIMIT+0.05){
-  alert('Attenzione: superi il limite di 20 g di grassi nel pasto o 60 g nella giornata. La quantità è stata comunque salvata.');
- }
- save();render();
-});
-$('meals').querySelectorAll('[data-done]').forEach(b=>b.onclick=()=>{m[+b.dataset.done].done=!m[+b.dataset.done].done;save();render()});
-renderProgress();renderSummaries()}
-function normalize(a){if(a.length===1)a[0].share=1;else if(a.length===2){a[0].share=.5;a[1].share=.5}else if(a.length===3)a.forEach(x=>x.share=1/3)}
-function setDate(s){let [y,m,d]=s.split('-').map(Number);selected=new Date(y,m-1,d);render()}
-function renderProgress(){let all=0,done=0;for(let x=new Date(start);x<=end;x.setDate(x.getDate()+1)){let a=meals(x);all+=a.length;done+=a.filter(p=>p.done).length}$('progressText').textContent=`${done} di ${all} pasti confermati`;$('progressPct').textContent=all?Math.round(done/all*100)+'%':'0%';$('progressBar').style.width=(all?done/all*100:0)+'%'}
-$('prevBtn').onclick=()=>{selected.setDate(selected.getDate()-1);render()};$('nextBtn').onclick=()=>{selected.setDate(selected.getDate()+1);render()};$('todayBtn').onclick=()=>{selected=new Date(start);render()};
-$('resetDay').onclick=()=>{if(confirm('Ripristinare le scelte dei pasti di questo giorno?')){data[key(selected)]={meals:defaults(selected)};save();render()}};
-$('export').onclick=()=>{let blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'}),a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='backup-planner.json';a.click();URL.revokeObjectURL(a.href)};
-$('import').onchange=async e=>{try{data=JSON.parse(await e.target.files[0].text());save();render();alert('Backup importato.')}catch(err){alert('File non valido.')}};
 render();
-})();
-</script></body></html>
+</script>
+</body></html>
