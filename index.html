@@ -1,0 +1,138 @@
+<!doctype html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#17251f">
+<title>Planner ricomposizione · guida porzioni</title>
+<style>
+:root{--bg:#f3f6f2;--card:#fff;--ink:#1b2a21;--muted:#65736a;--line:#dce5dc;--green:#216847;--soft:#e8f2eb;--gold:#fff4d9}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.5 system-ui,-apple-system,Segoe UI,sans-serif}
+header{background:#17251f;color:#fff;padding:22px 16px}header .wrap,main{max-width:980px;margin:auto}h1{font-size:23px;margin:0 0 4px}header p{margin:0;color:#d5e0d8}
+main{padding:16px;display:grid;gap:14px}.card{background:var(--card);border:1px solid var(--line);border-radius:15px;padding:15px;box-shadow:0 2px 8px #14271b08}
+h2{font-size:18px;margin:0 0 10px}h3{font-size:16px;margin:0 0 8px}.muted{color:var(--muted);font-size:13px}
+.daynav{display:flex;gap:9px;align-items:center;flex-wrap:wrap}.daynav button{border:1px solid var(--line);background:#fff;border-radius:9px;padding:9px 13px;color:var(--ink);font:inherit;cursor:pointer}.daynav .arrow{font-size:20px;min-width:42px}.daynav button:disabled{opacity:.35}
+.days{display:grid;grid-template-columns:repeat(7,1fr);gap:6px;margin-top:12px}.days button{padding:8px 3px;font-size:12px}.days button.active{background:var(--green);border-color:var(--green);color:#fff}.days b{display:block;font-size:16px}
+.meals{display:grid;grid-template-columns:1fr;gap:12px}.meal{border:1px solid var(--line);border-radius:12px;padding:13px;min-width:0}.mealhead{display:flex;justify-content:space-between;gap:8px;align-items:center;margin:0;cursor:pointer;list-style:none}.mealhead::-webkit-details-marker{display:none}.mealhead h2{margin:0}.mealhead .chevron{transition:transform .18s ease;font-size:18px;color:var(--muted)}details[open] .chevron{transform:rotate(180deg)}.mealbody{padding-top:10px}.kcal{background:var(--soft);color:var(--green);font-weight:750;padding:4px 9px;border-radius:20px;white-space:nowrap}
+.group{margin-top:12px}.group h4{margin:0 0 5px;color:var(--green);font-size:13px;text-transform:uppercase;letter-spacing:.04em}.foodlist{display:grid;grid-template-columns:repeat(auto-fit,minmax(155px,1fr));gap:8px}.food{display:flex;flex-direction:column;justify-content:space-between;gap:3px;padding:9px 11px;border:1px solid var(--line);border-radius:10px;background:#fbfdfb;min-width:0}.qty{font-weight:750;color:var(--green);white-space:nowrap}.note{background:var(--gold);padding:11px 13px;border-radius:10px;font-size:13px}
+.summary{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}.stat{background:var(--soft);border-radius:10px;padding:11px}.stat b{display:block;font-size:19px}.tag{display:inline-block;background:#edf0ed;border-radius:7px;padding:2px 7px;font-size:12px;color:#45534a}
+footer{text-align:center;color:var(--muted);font-size:12px;padding:8px 0 24px}
+@media(max-width:700px){.meals{grid-template-columns:1fr}.foodlist{grid-template-columns:repeat(2,minmax(0,1fr))}}
+</style>
+</head>
+<body>
+<header><div class="wrap"><h1>Planner ricomposizione · guida porzioni</h1><p>35 giorni · 2 novembre – 6 dicembre 2026 · riferimento 2.600 kcal al giorno</p></div></header>
+<main>
+<section class="card">
+<div class="daynav">
+<button class="arrow" id="prevBtn" aria-label="Giorno precedente">‹</button>
+<button id="todayBtn">Oggi</button>
+<button class="arrow" id="nextBtn" aria-label="Giorno successivo">›</button>
+<strong id="dateLabel"></strong>
+</div>
+</section>
+<section class="meals" id="meals"></section>
+<footer>Guida porzioni personale · dati salvati solo nella pagina, nessun account richiesto</footer>
+</main>
+<script>
+const start=new Date(2026,10,2),end=new Date(2026,11,6);
+const now=new Date();
+const localToday=new Date(now.getFullYear(),now.getMonth(),now.getDate());
+let selected=new Date(Math.min(Math.max(localToday.getTime(),start.getTime()),end.getTime()));
+const $=id=>document.getElementById(id);
+const fmt=d=>d.toLocaleDateString('it-IT',{weekday:'long',day:'numeric',month:'long',year:'numeric'});
+const foodGroups={
+carb:[
+['Pasta','100 g','150 g','90 g','70 g','90 g'],
+['Riso','100 g','150 g','90 g','70 g','90 g'],
+['Cous cous','100 g','150 g','90 g','70 g','90 g'],
+
+['Fiocchi d’avena','100 g','150 g','90 g','70 g','90 g'],
+
+['Pane','150 g','200 g','120 g','100 g','120 g'],
+['Gnocchi di patate','225 g','350 g','200 g','160 g','200 g'],
+['Patate','500 g','700 g','400 g','350 g','400 g']
+],
+protein:[
+['Pollo','150 g','200 g','150 g','100 g','120 g'],
+['Manzo magro','150 g','200 g','150 g','100 g','120 g'],
+['Merluzzo','200 g','250 g','200 g','140 g','150 g'],
+['Tonno sgocciolato','150 g','150 g','150 g','110 g','150 g'],
+['Salmone','150 g','200 g','150 g','100 g','120 g'],
+['Gamberi','200 g','250 g','200 g','140 g','150 g'],
+['Uova intere','3 uova','4 uova','3 uova','2 uova','2 uova'],
+['Yogurt greco','200 g','250 g','200 g','150 g','250 g'],
+['Fagioli','150 g','300 g','150 g','110 g','300 g'],
+['Proteine in polvere','30 g','30 g','30 g','20 g','30 g']
+],
+fat:[
+['Olio extravergine d’oliva','15 g','15 g','15 g','10 g','15 g'],
+['Mandorle','20 g','20 g','20 g','15 g','20 g'],
+['Cioccolato fondente','20 g','20 g','20 g','15 g','20 g'],
+['Cacao amaro','30 g','30 g','30 g','20 g','30 g']
+]};
+function dayMeals(d){
+ const w=d.getDay();
+ if(w===6)return [{name:'Pranzo',time:'13:00',kcal:700,kind:'lunch'},{name:'Cena libera',time:'sera',kcal:1900,kind:'free'}];
+ if(w===2||w===4)return [
+ {name:'Pranzo',time:'13:00',kcal:700,kind:'lunch'},
+ {name:'Spuntino',time:'17:00',kcal:700,kind:'snack'},
+ {name:'Cena',time:'21:00',kcal:700,kind:'shortDinner'},
+ {name:'Pre-nanna',time:'prima di dormire',kcal:500,kind:'smallNight'}];
+ return [{name:'Pranzo',time:'13:00',kcal:700,kind:'lunch'},
+ {name:'Cena',time:'20:00',kcal:1200,kind:'dinner'},
+ {name:'Pre-nanna',time:'prima di dormire',kcal:700,kind:'night'}];
+}
+function groupedFoods(items, col){
+ const groups=new Map();
+ items.forEach(item=>{
+  const qty=item[col];
+  if(!groups.has(qty))groups.set(qty,[]);
+  groups.get(qty).push(item[0]);
+ });
+ return [...groups.entries()].map(([qty,names])=>({names:names.join(' / '),qty}));
+}
+function foodCards(items,col){
+ return '<div class="foodlist">'+groupedFoods(items,col).map(g=>`<div class="food"><span>${g.names}</span><span class="qty">${g.qty}</span></div>`).join('')+'</div>';
+}
+function render(){
+ $('dateLabel').textContent=fmt(selected);
+ const meals=dayMeals(selected);
+ $('prevBtn').disabled=selected<=start;
+ $('nextBtn').disabled=selected>=end;
+ $('meals').innerHTML='';
+ meals.forEach(m=>{
+  let el=document.createElement('details');el.className='card meal';
+  let inner=`<summary class="mealhead"><div><h2>${m.name}</h2><span class="muted">${m.time}</span></div><div style="display:flex;align-items:center;gap:10px"><span class="kcal">${m.kcal.toLocaleString('it-IT')} kcal</span><span class="chevron">⌄</span></div></summary><div class="mealbody">`;
+  if(m.kind==='free'){inner+=`<p>Cena libera: budget di riferimento <b>1.900 kcal</b>, inclusa nel totale del sabato.</p>`}
+  else{
+   const ci= m.kind==='dinner'?2:m.kind==='shortDinner'?4:m.kind==='smallNight'?3:1;
+   const label=ci===1?'porzione pasto da 700 kcal':ci===2?'porzione cena da 1.200 kcal':ci===4?'porzione cena da 700 kcal':'porzione pre-nanna da 500 kcal';
+   inner+=`<span class="tag">${label}</span>`;
+   inner+=`<div class="group"><h4>Carboidrati · scegli un'alternativa</h4>`;
+   inner+=foodCards(foodGroups.carb,ci);
+   inner+=`</div><div class="group"><h4>Proteine · scegli un'alternativa</h4>`;
+   inner+=foodCards(foodGroups.protein,ci);
+   inner+=`</div><div class="group"><h4>Grassi · porzioni di riferimento</h4>`;
+   inner+=foodCards(foodGroups.fat,ci);
+   if(m.name==='Pranzo'||m.name==='Cena')inner+=`<div class="group"><h4>Verdure</h4><div class="foodlist"><div class="food"><span>Verdure a scelta</span><span class="qty">250 g</span></div></div></div>`;
+  }
+  inner+='</div>';
+  el.innerHTML=inner;$('meals').append(el);
+ });
+}
+function moveDay(delta){
+ const d=new Date(selected);d.setDate(d.getDate()+delta);
+ if(d>=start&&d<=end){selected=d;render();}
+}
+$('prevBtn').onclick=()=>moveDay(-1);
+$('nextBtn').onclick=()=>moveDay(1);
+$('todayBtn').onclick=()=>{
+ const t=new Date();
+ const today=new Date(t.getFullYear(),t.getMonth(),t.getDate());
+ selected=new Date(Math.min(Math.max(today.getTime(),start.getTime()),end.getTime()));
+ render();
+};
+render();
+</script>
+</body></html>
